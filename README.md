@@ -23,12 +23,12 @@ $routes->add(
     new Route('messages', ['_controller' => 'App\Controller\MessageController::list'])
 );
 $routes->add(
-    'messages_generate_url',
-    new Route('messages/generate-url', ['_controller' => 'App\Controller\MessageController::generateUrl'])
-);
-$routes->add(
     'messages_item',
     new Route('messages/{id}', ['_controller' => 'App\Controller\MessageController::item'])
+);
+$routes->add(
+    'generator_url_messages_item',
+    new Route('generator-url/messages-item', ['_controller' => 'App\Controller\GeneratorUrlController::messagesItem'])
 );
 
 
@@ -45,7 +45,7 @@ if ($parameters['_controller'] instanceof \Closure) {
     $method = $callable[1];
     
     switch ($parameters['_route']) {
-        case 'messages_generate_url': {
+        case 'generator_url_messages_item': {
             echo $object->$method(new UrlGenerator($routes, $context));
             break;
         }
@@ -60,7 +60,7 @@ if ($parameters['_controller'] instanceof \Closure) {
 ```
 [Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/index.php)
 
-## Controller with Simple Actions
+## Message Controller with Simple Actions
 ```php
 class MessageController
 {
@@ -94,6 +94,24 @@ class MessageController
 ```
 [Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/Controller/MessageController.php)
 
+## Generator URL Controller
+```php
+class GeneratorUrlController
+{
+    /**
+     * Route "/generator-url/messages-item"
+     */
+    public function messagesItem(UrlGenerator $generator): string
+    {
+        return sprintf(
+            'Generated URL "%s"',
+            $generator->generate('messages_item', ['id' => 123])
+        );
+    }
+}
+
+```
+
 ## Try-out
 Request route "/"
 ```bash
@@ -125,9 +143,9 @@ Response
 Message item with id 123
 ```
 ---
-Request route "/messages/generate-url"
+Request route "/generator-url/messages-item"
 ```bash
-curl http://127.0.0.1:8000/messages/generate-url
+curl http://127.0.0.1:8000/generator-url/messages-item
 ```
 
 Response

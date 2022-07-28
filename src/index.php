@@ -21,12 +21,12 @@ $routes->add(
     new Route('messages', ['_controller' => 'App\Controller\MessageController::list'])
 );
 $routes->add(
-    'messages_generate_url',
-    new Route('messages/generate-url', ['_controller' => 'App\Controller\MessageController::generateUrl'])
-);
-$routes->add(
     'messages_item',
     new Route('messages/{id}', ['_controller' => 'App\Controller\MessageController::item'])
+);
+$routes->add(
+    'generator_url_messages_item',
+    new Route('generator-url/messages-item', ['_controller' => 'App\Controller\GeneratorUrlController::messagesItem'])
 );
 
 
@@ -43,7 +43,7 @@ if ($parameters['_controller'] instanceof \Closure) {
     $method = $callable[1];
     
     switch ($parameters['_route']) {
-        case 'messages_generate_url': {
+        case 'generator_url_messages_item': {
             echo $object->$method(new UrlGenerator($routes, $context));
             break;
         }
