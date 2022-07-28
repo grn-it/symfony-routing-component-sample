@@ -79,17 +79,6 @@ class MessageController
     {
         return sprintf('Message item with id %d', $id);
     }
-
-    /**
-     * Route "/messages/generate-url"
-     */
-    public function generateUrl(UrlGenerator $generator): string
-    {
-        return sprintf(
-            'Generated URL "%s"',
-            $generator->generate('messages_item', ['id' => 123])
-        );
-    }
 }
 ```
 [Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/Controller/MessageController.php)
