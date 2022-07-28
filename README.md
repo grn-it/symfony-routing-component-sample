@@ -111,6 +111,7 @@ class GeneratorUrlController
 }
 
 ```
+[Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/Controller/GeneratorUrlController.php)
 
 ## Try-out
 Request route "/"
