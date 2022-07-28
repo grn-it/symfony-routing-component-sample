@@ -1,11 +1,11 @@
 # Symfony Routing Component Sample
 
-Simplified sample of using Symfony Routing component.  
+<ins>Simplified</ins> sample of using standalone Symfony Routing component on Flat PHP Application.  
 <br>
 Assigning routes and their corresponding controllers.  
 Handlers are specified as Closure callback and separate class of controller.
 
-## Adding Routes and Processing Request with launch of Appropriate Controller
+## Adding Routes and Processing Request with Execute Appropriate Controller
 ```php
 $routes = new RouteCollection();
 
@@ -90,3 +90,47 @@ class MessageController
 [Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/Controller/MessageController.php)
 
 ## Try-out
+Request route "/"
+```bash
+curl http://127.0.0.1:8000
+```
+
+Response
+```
+index
+```
+---
+Request route "/messages"
+```bash
+curl http://127.0.0.1:8000/messages
+```
+
+Response
+```
+Messages list
+```
+---
+Request route "/messages/{id}"
+```bash
+curl http://127.0.0.1:8000/messages/123
+```
+
+Response
+```
+Message item with id 123
+```
+---
+Request route "/messages/generate-url"
+```bash
+curl http://127.0.0.1:8000/messages/generate-url
+```
+
+Response
+```
+Generated URL "/messages/123"
+```
+
+## Resources
+[Create your own PHP Framework](https://symfony.com/doc/current/create_framework/index.html)  
+[Routing](https://symfony.com/doc/current/routing.html)  
+[Symfony Routing Component](https://github.com/symfony/routing)
