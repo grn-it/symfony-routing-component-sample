@@ -141,7 +141,7 @@ echo json_encode(['url' => $generator->generate('messages_item', ['id' => 48])])
 [Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/UrlGenerator.php)
 
 ## Try-out
-Request route `"/"`
+Request `"/"`
 ```bash
 curl http://127.0.0.1:8000
 ```
@@ -152,7 +152,7 @@ Response
 ```
 <br>
 
-Request route `"/messages"`
+Request `"/messages"`
 ```bash
 curl http://127.0.0.1:8000/messages
 ```
@@ -203,7 +203,7 @@ Response
 ```
 <br>
 
-Request route `"/messages/{id}"`
+Request `"/messages/{id}"`
 ```bash
 curl http://127.0.0.1:8000/messages/48
 ```
