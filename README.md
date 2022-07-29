@@ -7,7 +7,7 @@ Handlers are specified as Closure callback and separate class of controller.
 
 Run this command to fix permissions to be able to edit and create files:
 ```bash
-docker-compose exec symfony-web-application make install uid=$(id -u)
+docker-compose exec symfony-routing-component-sample make install uid=$(id -u)
 ```
 
 ## Routes

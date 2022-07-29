@@ -1,10 +1,10 @@
 version: "3.4"
 
 services:
-  symfony-web-application:
+  symfony-routing-component-sample:
     build:
       context: .
-      target: symfony-web-application
+      target: symfony-routing-component-sample
     volumes:
       - .:/app
     stop_grace_period: 0s
