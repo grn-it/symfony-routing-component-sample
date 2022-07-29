@@ -10,8 +10,9 @@ Run this command to fix permissions to be able to edit and create files:
 docker-compose exec symfony-web-application make install uid=$(id -u)
 ```
 
-## Adding Routes and Processing Request with Execute Appropriate Controller
+## Routes
 ```php
+$context = new RequestContext();
 $routes = new RouteCollection();
 
 $routes->add(
@@ -19,21 +20,17 @@ $routes->add(
     new Route('/', ['_controller' => static function() { return 'index'; }])
 );
 $routes->add(
-    'messages_list', 
+    'messages_list',
     new Route('messages', ['_controller' => 'App\Controller\MessageController::list'])
 );
 $routes->add(
     'messages_item',
     new Route('messages/{id}', ['_controller' => 'App\Controller\MessageController::item'])
 );
-$routes->add(
-    'generator_url_messages_item',
-    new Route('generator-url/messages-item', ['_controller' => 'App\Controller\GeneratorUrlController::messagesItem'])
-);
+```
 
-
-$context = new RequestContext();
-
+## Processing Request
+```php
 $matcher = new UrlMatcher($routes, $context);
 $parameters = $matcher->match($_SERVER['REQUEST_URI']);
 
@@ -45,10 +42,6 @@ if ($parameters['_controller'] instanceof \Closure) {
     $method = $callable[1];
     
     switch ($parameters['_route']) {
-        case 'generator_url_messages_item': {
-            echo $object->$method(new UrlGenerator($routes, $context));
-            break;
-        }
         case 'messages_item': {
             echo $object->$method($parameters['id']);
             break;
@@ -58,9 +51,8 @@ if ($parameters['_controller'] instanceof \Closure) {
     }
 }
 ```
-[Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/index.php)
 
-## Message Controller with Simple Actions
+## Controller
 ```php
 class MessageController
 {
@@ -69,7 +61,49 @@ class MessageController
      */
     public function list(): string
     {
-        return 'Messages list';
+        $messages = [
+            [
+                'id' => 46,
+                'from' => [
+                    'id' => 55,
+                    'email' => 'walter@gmail.com'
+                ],
+                'to' => [
+                    'id' => 56,
+                    'email' => 'kate@gmail.com'
+                ],
+                'text' => 'Hi, Kate, how are you settling in?',
+                'createdAt' => '2022-07-03 12:14:53'
+            ],
+            [
+                'id' => 47,
+                'from' => [
+                    'id' => 56,
+                    'email' => 'kate@gmail.com'
+                ],
+                'to' => [
+                    'id' => 55,
+                    'email' => 'walter@gmail.com'
+                ],
+                'text' => 'Just fine thanks. I appreciate you taking the time to help me out with this software. May I ask you what we will be covering today?',
+                'createdAt' => '2022-07-03 12:15:05'
+            ],
+            [
+                'id' => 48,
+                'from' => [
+                    'id' => 55,
+                    'email' => 'walter@gmail.com'
+                ],
+                'to' => [
+                    'id' => 56,
+                    'email' => 'kate@gmail.com'
+                ],
+                'text' => 'Sure. Before I do that, could you tell me if you\'ve worked with this program before? That will help me figure out how to proceed',
+                'createdAt' => '2022-07-03 12:15:17'
+            ]
+        ];
+        
+        return json_encode($messages);
     }
 
     /**
@@ -77,30 +111,30 @@ class MessageController
      */
     public function item(int $id): string
     {
-        return sprintf('Message item with id %d', $id);
+        $message = [
+            'id' => 48,
+            'from' => [
+                'id' => 55,
+                'email' => 'walter@gmail.com'
+            ],
+            'to' => [
+                'id' => 56,
+                'email' => 'kate@gmail.com'
+            ],
+            'text' => 'Sure. Before I do that, could you tell me if you\'ve worked with this program before? That will help me figure out how to proceed',
+            'createdAt' => '2022-07-03 12:15:17'
+        ];
+        
+        return json_encode($message);
     }
 }
 ```
-[Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/Controller/MessageController.php)
 
-## Generator URL Controller
+## URL Generator
 ```php
-class GeneratorUrlController
-{
-    /**
-     * Route "/generator-url/messages-item"
-     */
-    public function messagesItem(UrlGenerator $generator): string
-    {
-        return sprintf(
-            'Generated URL "%s"',
-            $generator->generate('messages_item', ['id' => 123])
-        );
-    }
-}
-
+$generator = new UrlGenerator($routes, $context);
+echo json_encode(['url' => $generator->generate('messages_item', ['id' => 48])]);
 ```
-[Go To Sample](https://github.com/grn-it/symfony-routing-component-sample/blob/main/src/Controller/GeneratorUrlController.php)
 
 ## Try-out
 Request route "/"
@@ -109,38 +143,91 @@ curl http://127.0.0.1:8000
 ```
 
 Response
+```json
+{"message":"Hello. This is index page"}
 ```
-index
-```
----
+
 Request route "/messages"
 ```bash
 curl http://127.0.0.1:8000/messages
 ```
 
 Response
+```json
+[
+  {
+    "id": 46,
+    "from": {
+      "id": 55,
+      "email": "walter@gmail.com"
+    },
+    "to": {
+      "id": 56,
+      "email": "kate@gmail.com"
+    },
+    "text": "Hi, Kate, how are you settling in?",
+    "createdAt": "2022-07-03 12:14:53"
+  },
+  {
+    "id": 47,
+    "from": {
+      "id": 56,
+      "email": "kate@gmail.com"
+    },
+    "to": {
+      "id": 55,
+      "email": "walter@gmail.com"
+    },
+    "text": "Just fine thanks. I appreciate you taking the time to help me out with this software. May I ask you what we will be covering today?",
+    "createdAt": "2022-07-03 12:15:05"
+  },
+  {
+    "id": 48,
+    "from": {
+      "id": 55,
+      "email": "walter@gmail.com"
+    },
+    "to": {
+      "id": 56,
+      "email": "kate@gmail.com"
+    },
+    "text": "Sure. Before I do that, could you tell me if you've worked with this program before? That will help me figure out how to proceed",
+    "createdAt": "2022-07-03 12:15:17"
+  }
+]
 ```
-Messages list
-```
----
+
 Request route "/messages/{id}"
 ```bash
-curl http://127.0.0.1:8000/messages/123
+curl http://127.0.0.1:8000/messages/48
 ```
 
 Response
+```json
+{
+  "id": 48,
+  "from": {
+    "id": 55,
+    "email": "walter@gmail.com"
+  },
+  "to": {
+    "id": 56,
+    "email": "kate@gmail.com"
+  },
+  "text": "Sure. Before I do that, could you tell me if you've worked with this program before? That will help me figure out how to proceed",
+  "createdAt": "2022-07-03 12:15:17"
+}
+
 ```
-Message item with id 123
-```
----
-Request route "/generator-url/messages-item"
+
+Execute URL Generator
 ```bash
-curl http://127.0.0.1:8000/generator-url/messages-item
+php src/UrlGenerator.php
 ```
 
-Response
-```
-Generated URL "/messages/123"
+Output
+```json
+{"url":"/messages/48"}
 ```
 
 ## Resources
